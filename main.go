@@ -20,36 +20,37 @@ func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	fmt.Println("Enter IMEI")
 	scanner.Scan()
-	// convert CRLF to LF
+
 	IMEI := scanner.Text()
-	// IMEI := "358692051234567"
 
 	parsed, err1 := (parseIMEI(IMEI))
 
 	validity, err2 := (validateChecksum(IMEI))
 
-	// if err1 != nil {
-	// 	fmt.Errorf("invalid length")
-	// }
-	// if validity == false || err2 != nil {
-	// 	fmt.Errorf("invalid imei")
-	// }
-	fmt.Print(err1, validity, err2)
-	fmt.Println("TAC:", parsed.typeAllocationCode)
-	fmt.Println("Serial Number:", parsed.serialNumber)
-	fmt.Println("Checksum:", parsed.checksum)
+	// fmt.Println(err1)
+	// fmt.Println(err2)
+
+	if err1 == nil && err2 == nil {
+		fmt.Println("TAC:", parsed.typeAllocationCode)
+		fmt.Println("Serial Number:", parsed.serialNumber)
+		fmt.Println("Checksum:", parsed.checksum)
+	}
+
+	if validity == false && err1 != nil {
+		fmt.Println(err1)
+	} else {
+		fmt.Println(err2)
+	}
 
 }
 
 func parseIMEI(IMEI string) (parsed parsedIMEI, err error) {
 	// length check
 	length := len(IMEI)
-	fmt.Print(length)
+	// fmt.Print(length)
 	if length != 15 {
-
-		fmt.Print("length is bad")
-
-		return parsed, errors.New("invalid length")
+		err = errors.New("invalid length")
+		return parsed, err
 
 	}
 
@@ -62,10 +63,7 @@ func parseIMEI(IMEI string) (parsed parsedIMEI, err error) {
 	var checksumString string = IMEI[14:15]
 
 	intChecksum, err := strconv.Atoi(checksumString)
-	if err != nil {
-		fmt.Print("wtf2")
-		return parsed, errors.New("invalid imei")
-	}
+
 	parsed.checksum = intChecksum
 
 	return parsed, err
@@ -79,8 +77,8 @@ func validateChecksum(IMEI string) (bool, error) {
 	for i := len(IMEI) - 1; i >= 0; i-- {
 		current, err := strconv.Atoi(string(IMEI[i]))
 		if err != nil {
-			fmt.Print("wtf3")
-			return false, fmt.Errorf("invalid IMEI")
+
+			return false, errors.New("invalid IMEI")
 
 		}
 
@@ -93,5 +91,10 @@ func validateChecksum(IMEI string) (bool, error) {
 		sum += current
 	}
 
-	return sum%10 == 0, err
+	if sum%10 == 0 {
+		return true, err
+	}
+	err = errors.New("invalid checksum")
+	return false, err
+
 }
