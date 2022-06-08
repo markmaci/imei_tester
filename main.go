@@ -48,7 +48,7 @@ func parseIMEI(IMEI string) (parsed parsedIMEI, err error) {
 	// length check
 	length := len(IMEI)
 	if length != 15 {
-		err = errors.New("invalid length")
+		err = errors.New("error = invalid length")
 		return parsed, err
 
 	}
@@ -79,7 +79,7 @@ func validateChecksum(IMEI string) (bool, error) {
 		current, err := strconv.Atoi(string(IMEI[i]))
 		if err != nil {
 
-			return false, errors.New("invalid IMEI")
+			return false, errors.New("error = invalid IMEI")
 
 		}
 
@@ -96,7 +96,7 @@ func validateChecksum(IMEI string) (bool, error) {
 	if sum%10 == 0 {
 		return true, err
 	}
-	err = errors.New("invalid checksum")
+	err = errors.New("error = invalid checksum")
 	return false, err
 
 }
