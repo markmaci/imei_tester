@@ -1,0 +1,46 @@
+Parsing IMEI on line 0, 357897085527974
+TAC:35789708
+Serial Number:552797
+Checksum:4
+
+Parsing IMEI on line 1, 354173102238216
+TAC:35417310
+Serial Number:223821
+Checksum:6
+
+Parsing IMEI on line 2, 356496047193800
+TAC:35649604
+Serial Number:719380
+Checksum:0
+
+Parsing IMEI on line 3, 357139061641010
+TAC:35713906
+Serial Number:164101
+Checksum:0
+
+Parsing IMEI on line 4, 862061044902087
+TAC:86206104
+Serial Number:490208
+Checksum:7
+
+Parsing IMEI on line 5, 864196033935090
+TAC:86419603
+Serial Number:393509
+Checksum:0
+
+Parsing IMEI on line 6, 861663039053692
+TAC:86166303
+Serial Number:905369
+Checksum:2
+
+Parsing IMEI on line 7, 357700101512527
+TAC:35770010
+Serial Number:151252
+Checksum:7
+
+Parsing IMEI on line 8, 3547441015564268
+error = invalid length
+
+Parsing IMEI on line 9, 868880045952250
+error = invalid checksum
+

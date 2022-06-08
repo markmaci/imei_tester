@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strconv"
 )
 
@@ -16,30 +17,68 @@ type parsedIMEI struct {
 	checksum           int
 }
 
+func check(e error) {
+	// error handling
+	if e != nil {
+		panic(e)
+	}
+}
+
 func main() {
-	// read in from terminal
-	scanner := bufio.NewScanner(os.Stdin)
-	fmt.Println("Enter IMEI")
-	scanner.Scan()
+	// read in from file
+	pwd, err := os.Getwd()
+	filepath := filepath.Join(pwd + "/testdata.txt")
+	file, _ := os.Open(filepath)
 
-	IMEI := scanner.Text()
-	// run parse and validate functions on input
-	parsed, err1 := (parseIMEI(IMEI))
-
-	validity, err2 := (validateChecksum(IMEI))
-
-	// if there are no errors, print the parsed IMEI
-	if err1 == nil && err2 == nil {
-		fmt.Println("TAC:", parsed.typeAllocationCode)
-		fmt.Println("Serial Number:", parsed.serialNumber)
-		fmt.Println("Checksum:", parsed.checksum)
+	if err != nil {
+		fmt.Print("error with data file")
+		fmt.Print(err)
 	}
 
-	// print the relavent error message
-	if validity == false && err1 != nil {
-		fmt.Println(err1)
-	} else if err2 != nil {
-		fmt.Println(err2)
+	defer file.Close()
+	// create array of imeis on each line using scanner
+	var entries []string
+	scanner := bufio.NewScanner(file)
+
+	for scanner.Scan() {
+		entries = append(entries, scanner.Text())
+	}
+
+	// create output file
+	newfile, err := os.Create("parsed.txt")
+
+	for i := 0; i < len(entries); i++ {
+
+		// run parse and validate functions on input
+		parsed, err1 := (parseIMEI(entries[i]))
+
+		validity, err2 := (validateChecksum(entries[i]))
+
+		iString := strconv.Itoa(i)
+		checksumString := strconv.Itoa(parsed.checksum)
+
+		newfile.WriteString("Parsing IMEI on line " + iString + ", " + entries[i] + "\n")
+
+		// if there are no errors, write the parsed imei to file
+		if err1 == nil && err2 == nil {
+
+			newfile.WriteString("TAC:" + parsed.typeAllocationCode + "\n")
+
+			newfile.WriteString("Serial Number:" + parsed.serialNumber + "\n")
+
+			newfile.WriteString("Checksum:" + checksumString + "\n")
+
+			newfile.WriteString("\n")
+		}
+
+		// write the relavent error message
+		if validity == false && err1 != nil {
+			newfile.WriteString(err1.Error() + "\n")
+			newfile.WriteString("\n")
+		} else if err2 != nil {
+			newfile.WriteString(err2.Error() + "\n")
+			newfile.WriteString("\n")
+		}
 	}
 
 }
