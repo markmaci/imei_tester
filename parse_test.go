@@ -29,11 +29,21 @@ func TestValidate2(t *testing.T) {
 }
 
 func TestParse(t *testing.T) {
-	got, err2 := parseIMEI("357700101512527")
+	got, err := parseIMEI("357700101512527")
 	want := parsedIMEI{typeAllocationCode: "35770010", serialNumber: "151252", checksum: 7}
 
 	if got != want {
 		t.Errorf("failed")
-		t.Logf(err2.Error())
+		t.Log(err)
+	}
+}
+
+func TestParse2(t *testing.T) {
+	got, err := parseIMEI("861663039053692")
+	want := parsedIMEI{typeAllocationCode: "86166303", serialNumber: "905369", checksum: 2}
+
+	if got != want {
+		t.Errorf("failed")
+		t.Log(err)
 	}
 }
