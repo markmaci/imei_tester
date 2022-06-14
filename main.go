@@ -17,13 +17,6 @@ type parsedIMEI struct {
 	checksum           int
 }
 
-func check(e error) {
-	// error handling
-	if e != nil {
-		panic(e)
-	}
-}
-
 func main() {
 	// read in from file
 	pwd, err := os.Getwd()
@@ -46,6 +39,9 @@ func main() {
 
 	// create output file
 	newfile, err := os.Create("parsed.txt")
+	if err != nil {
+		fmt.Print(err)
+	}
 
 	for i := 0; i < len(entries); i++ {
 
@@ -72,7 +68,7 @@ func main() {
 		}
 
 		// write the relavent error message
-		if validity == false && err1 != nil {
+		if !validity && err1 != nil {
 			newfile.WriteString(err1.Error() + "\n")
 			newfile.WriteString("\n")
 		} else if err2 != nil {
